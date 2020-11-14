@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.11.13
+# v0.12.7
 
 using Markdown
 using InteractiveUtils
@@ -32,7 +32,7 @@ Feel free to ask questions!
 # ╔═╡ 911ccbce-ed68-11ea-3606-0384e7580d7c
 # edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
 
-student = (name = "Jazzy Doe", kerberos_id = "jazz")
+student = (name = "Christer Nilsson", kerberos_id = "janchrister.nilsson")
 
 # press the ▶ button in the bottom right of this cell to run your edits
 # or use Shift+Enter
@@ -87,33 +87,33 @@ md"#### Exerise 1.1
 "
 
 # ╔═╡ f51333a6-eded-11ea-34e6-bfbb3a69bcb0
-random_vect = missing # replace this with your code!
+random_vect = rand(Float64,10)
 
 # ╔═╡ cf738088-eded-11ea-2915-61735c2aa990
 md"👉 Make a function `mean` using a `for` loop, which computes the mean/average of a vector of numbers."
 
 # ╔═╡ 0ffa8354-edee-11ea-2883-9d5bfea4a236
 function mean(x)
-	
-	return missing
+	total = 0
+	[total += item for item in x]
+	total/length(x)
 end
 
 # ╔═╡ 1f104ce4-ee0e-11ea-2029-1d9c817175af
-mean([1, 2, 3])
+mean([1, 2, 4])
 
 # ╔═╡ 1f229ca4-edee-11ea-2c56-bb00cc6ea53c
 md"👉 Define `m` to be the mean of `random_vect`."
 
 # ╔═╡ 2a391708-edee-11ea-124e-d14698171b68
-m = missing
+m = mean(random_vect)
 
 # ╔═╡ e2863d4c-edef-11ea-1d67-332ddca03cc4
 md"""👉 Write a function `demean`, which takes a vector `x` and subtracts the mean from each value in `x`."""
 
 # ╔═╡ ec5efe8c-edef-11ea-2c6f-afaaeb5bc50c
 function demean(x)
-	
-	return missing
+	x .- mean(x)
 end
 
 # ╔═╡ 29e10640-edf0-11ea-0398-17dbf4242de3
@@ -144,8 +144,9 @@ md"""
 
 # ╔═╡ b6b65b94-edf0-11ea-3686-fbff0ff53d08
 function create_bar()
-	
-	return missing
+	arr = zeros(100)
+	arr[40:50] .= 1
+	return arr
 end
 
 # ╔═╡ 22f28dae-edf2-11ea-25b5-11c369ae1253
@@ -157,8 +158,8 @@ md"""
 
 # ╔═╡ 8c19fb72-ed6c-11ea-2728-3fa9219eddc4
 function vecvec_to_matrix(vecvec)
-	
-	return missing
+	a = collect(Iterators.flatten(vecvec))
+	return reshape(a,2,2)
 end
 
 # ╔═╡ c4761a7e-edf2-11ea-1e75-118e73dadbed
@@ -172,10 +173,7 @@ md"""
 """
 
 # ╔═╡ 9f1c6d04-ed6c-11ea-007b-75e7e780703d
-function matrix_to_vecvec(matrix)
-	
-	return missing
-end
+matrix_to_vecvec(A) = [A[:,i] for i in 1:size(A,2)]
 
 # ╔═╡ 70955aca-ed6e-11ea-2330-89b4d20b1795
 matrix_to_vecvec([6 7; 8 9])
@@ -219,12 +217,20 @@ md"""
 
 # ╔═╡ f6898df6-ee07-11ea-2838-fde9bc739c11
 function mean_colors(image)
-	
-	return missing
+	r = 0
+	g = 0
+	b = 0
+	h = height(image)
+	w = width(image)
+	n = h * w 
+	for i in 1:h,j in 1:w
+		pixel = image[i,j]
+		r += pixel.r			
+		g += pixel.g			
+		b += pixel.b			
+	end
+	return (r,g,b)./n
 end
-
-# ╔═╡ d75ec078-ee0d-11ea-3723-71fb8eecb040
-
 
 # ╔═╡ f68d4a36-ee07-11ea-0832-0360530f102e
 md"""
@@ -235,23 +241,21 @@ md"""
 # ╔═╡ f6991a50-ee07-11ea-0bc4-1d68eb028e6a
 begin
 	function quantize(x::Number)
-		
-		return missing
+		floor(10*x)/10
 	end
 	
 	function quantize(color::AbstractRGB)
-		# you will write me in a later exercise!
-		return missing
+		(quantize(color.r),quantize(color.g),quantize(color.b))
 	end
 	
-	function quantize(image::AbstractMatrix)
-		# you will write me in a later exercise!
-		return missing
-	end
+	quantize(image::AbstractMatrix) = [quantize(pixel) for pixel in image]
 end
 
 # ╔═╡ f6a655f8-ee07-11ea-13b6-43ca404ddfc7
 quantize(0.267), quantize(0.91)
+
+# ╔═╡ 848941b0-26a1-11eb-0495-5fb5249c1eeb
+quantize(RGB(0.267,0.91,0.23))
 
 # ╔═╡ f6b218c0-ee07-11ea-2adb-1968c4fd473a
 md"""
@@ -283,10 +287,7 @@ md"""
 """
 
 # ╔═╡ 63e8d636-ee0b-11ea-173d-bd3327347d55
-function invert(color::AbstractRGB)
-	
-	return missing
-end
+invert(color::AbstractRGB) = RGB(1-color.r, 1-color.g, 1-color.b)
 
 # ╔═╡ 2cc2f84e-ee0d-11ea-373b-e7ad3204bb00
 md"Let's invert some colors:"
@@ -305,9 +306,6 @@ invert(red)
 
 # ╔═╡ 846b1330-ee0b-11ea-3579-7d90fafd7290
 md"Can you invert the picture of Philip?"
-
-# ╔═╡ 943103e2-ee0b-11ea-33aa-75a8a1529931
-philip_inverted = missing
 
 # ╔═╡ f6d6c71a-ee07-11ea-2b63-d759af80707b
 md"""
@@ -390,8 +388,14 @@ end
 # ╔═╡ 5be9b144-ee0d-11ea-2a8d-8775de265a1d
 mean_colors(philip)
 
+# ╔═╡ 29f23a30-26a2-11eb-034d-4fe3c60c2c80
+quantize(philip)
+
 # ╔═╡ 9751586e-ee0c-11ea-0cbb-b7eda92977c9
 quantize(philip)
+
+# ╔═╡ 943103e2-ee0b-11ea-33aa-75a8a1529931
+philip_inverted = invert.(philip)
 
 # ╔═╡ ac15e0d0-ee0c-11ea-1eaf-d7f88b5df1d7
 noisify(philip, philip_noise)
@@ -1070,12 +1074,6 @@ end
 # ╔═╡ 115ded8c-ee0a-11ea-3493-89487315feb7
 bigbreak = html"<br><br><br><br><br>";
 
-# ╔═╡ 54056a02-ee0a-11ea-101f-47feb6623bec
-bigbreak
-
-# ╔═╡ 45815734-ee0a-11ea-2982-595e1fc0e7b1
-bigbreak
-
 # ╔═╡ 4139ee66-ee0a-11ea-2282-15d63bcca8b8
 bigbreak
 
@@ -1349,17 +1347,16 @@ sobel_camera_image = Gray.(process_raw_camera_data(sobel_raw_camera_data));
 with_sobel_edge_detect(sobel_camera_image)
 
 # ╔═╡ Cell order:
-# ╠═83eb9ca0-ed68-11ea-0bc5-99a09c68f867
+# ╟─83eb9ca0-ed68-11ea-0bc5-99a09c68f867
 # ╟─8ef13896-ed68-11ea-160b-3550eeabbd7d
 # ╟─ac8ff080-ed61-11ea-3650-d9df06123e1f
-# ╠═911ccbce-ed68-11ea-3606-0384e7580d7c
+# ╟─911ccbce-ed68-11ea-3606-0384e7580d7c
 # ╟─5f95e01a-ee0a-11ea-030c-9dba276aba92
 # ╠═65780f00-ed6b-11ea-1ecf-8b35523a7ac0
 # ╟─67461396-ee0a-11ea-3679-f31d46baa9b4
 # ╠═74b008f6-ed6b-11ea-291f-b3791d6d1b35
-# ╟─54056a02-ee0a-11ea-101f-47feb6623bec
 # ╟─540ccfcc-ee0a-11ea-15dc-4f8120063397
-# ╟─467856dc-eded-11ea-0f83-13d939021ef3
+# ╠═467856dc-eded-11ea-0f83-13d939021ef3
 # ╠═56ced344-eded-11ea-3e81-3936e9ad5777
 # ╟─ad6a33b0-eded-11ea-324c-cfabfd658b56
 # ╠═f51333a6-eded-11ea-34e6-bfbb3a69bcb0
@@ -1392,7 +1389,6 @@ with_sobel_edge_detect(sobel_camera_image)
 # ╠═70955aca-ed6e-11ea-2330-89b4d20b1795
 # ╟─e06b7fbc-edf2-11ea-1708-fb32599dded3
 # ╟─5da8cbe8-eded-11ea-2e43-c5b7cc71e133
-# ╟─45815734-ee0a-11ea-2982-595e1fc0e7b1
 # ╟─e083b3e8-ed61-11ea-2ec9-217820b0a1b4
 # ╠═c5484572-ee05-11ea-0424-f37295c3072d
 # ╠═c8ecfe5c-ee05-11ea-322b-4b2714898831
@@ -1401,10 +1397,11 @@ with_sobel_edge_detect(sobel_camera_image)
 # ╠═f6898df6-ee07-11ea-2838-fde9bc739c11
 # ╠═5be9b144-ee0d-11ea-2a8d-8775de265a1d
 # ╟─4d0158d0-ee0d-11ea-17c3-c169d4284acb
-# ╠═d75ec078-ee0d-11ea-3723-71fb8eecb040
 # ╟─f68d4a36-ee07-11ea-0832-0360530f102e
 # ╠═f6991a50-ee07-11ea-0bc4-1d68eb028e6a
 # ╠═f6a655f8-ee07-11ea-13b6-43ca404ddfc7
+# ╠═848941b0-26a1-11eb-0495-5fb5249c1eeb
+# ╠═29f23a30-26a2-11eb-034d-4fe3c60c2c80
 # ╟─c905b73e-ee1a-11ea-2e36-23b8e73bfdb6
 # ╟─f6b218c0-ee07-11ea-2adb-1968c4fd473a
 # ╟─f6bf64da-ee07-11ea-3efb-05af01b14f67
